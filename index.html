@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Choir Attendance - 15th Anniversary</title>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    background: linear-gradient(to right, #1e3c72, #2a5298);
+    color: white;
+}
+.container {
+    max-width: 500px;
+    margin: auto;
+    background: white;
+    color: black;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+}
+h2 {
+    text-align: center;
+    color: #1e3c72;
+}
+label {
+    font-weight: bold;
+    display: block;
+    margin-top: 15px;
+}
+input, select, textarea, button {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+}
+button {
+    background-color: #1e3c72;
+    color: white;
+    border: none;
+    margin-top: 20px;
+    font-weight: bold;
+}
+button:hover {
+    background-color: #16325c;
+}
+.success {
+    display: none;
+    margin-top: 15px;
+    color: green;
+    font-weight: bold;
+    text-align: center;
+}
+</style>
+</head>
+<body>
+<div class="container">
+<h2>Choir Rehearsal Attendance</h2>
+
+<form id="attendanceForm">
+<label>Full Name</label>
+<input type="text" name="name" placeholder="Enter your full name" required>
+
+<label>Voice Part</label>
+<select name="voice" required>
+<option value="">Select</option>
+<option>Soprano</option>
+<option>Alto</option>
+<option>Tenor</option>
+<option>Bass</option>
+</select>
+
+<label>Date</label>
+<input type="date" name="date" required>
+
+<label>Contribution Paid?</label>
+<select name="contribution" required>
+<option value="">Select</option>
+<option>Yes</option>
+<option>No</option>
+</select>
+
+<label>Notes</label>
+<textarea name="notes" placeholder="Optional notes"></textarea>
+
+<button type="submit">Submit Attendance</button>
+</form>
+
+<div class="success" id="successMessage">
+Attendance submitted successfully!
+</div>
+</div>
+
+<script>
+// ⚠️ Replace this with your Google Apps Script Web App URL
+const scriptURL = "https://script.google.com/macros/s/AKfycbw3aQ2DzNTSZViLKFxwMXZUDZoemk0VhqHPkjKSNw71u2O6kZToauRS89ezmQijK7Iu/exec";
+
+const form = document.getElementById('attendanceForm');
+const successMessage = document.getElementById('successMessage');
+
+form.addEventListener('submit', e => {
+    e.preventDefault();
+    fetch(scriptURL, { method: 'POST', body: new FormData(form)})
+        .then(response => {
+            successMessage.style.display = "block";
+            form.reset();
+        })
+        .catch(error => alert("Error submitting form. Check your Google Apps Script URL."));
+});
+</script>
+</body>
+</html>
