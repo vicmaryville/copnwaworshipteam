@@ -1,173 +1,113 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Choir Attendance</title>
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-        background: linear-gradient(135deg, #3b0a45, #7b1fa2);
-        color: white;
-        padding: 20px;
-        text-align: center;
-      }
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Choir Attendance</title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg,#3b0a45,#7b1fa2);
+  color: white;
+  padding: 20px;
+  text-align: center;
+}
+.container {
+  max-width: 400px;
+  margin: auto;
+  background: white;
+  color: #333;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+h1 { color: #7b1fa2; margin-bottom: 20px; }
+input, select, textarea, button {
+  width: 100%; padding: 10px; margin: 8px 0;
+  border-radius: 8px; border: 1px solid #ccc;
+  box-sizing: border-box; font-size: 16px;
+}
+button {
+  background: #7b1fa2; color: white; border: none;
+  font-weight: bold; cursor: pointer;
+}
+button:hover { background: #4a0072; }
+.success {
+  display: none; color: green; font-weight: bold; margin-top: 10px;
+}
+</style>
+</head>
 
-      .container {
-        max-width: 400px;
-        margin: auto;
-        background: white;
-        color: #333;
-        padding: 20px;
-        border-radius: 12px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-      }
+<body>
+<h1>🎉 COPNWA Worship Team Attendance</h1>
 
-      h1 {
-        color: #7b1fa2;
-        margin-bottom: 20px;
-      }
+<div class="container">
+<form id="attendanceForm">
+<input type="text" name="fullName" placeholder="Full Name" required />
+<input type="date" name="date" placeholder="Rehearsal Date" required />
 
-      input,
-      select,
-      textarea,
-      button {
-        width: 100%;
-        padding: 10px;
-        margin: 8px 0;
-        border-radius: 8px;
-        border: 1px solid #ccc;
-        box-sizing: border-box;
-        font-size: 16px;
-      }
+<select name="roleType" id="roleType" required onchange="updateRoleOptions()">
+  <option value="">Select Role Type</option>
+  <option value="Singer">Singer</option>
+  <option value="Musician">Musician</option>
+</select>
 
-      button {
-        background: #7b1fa2;
-        color: white;
-        border: none;
-        font-weight: bold;
-        cursor: pointer;
-      }
+<div id="roleDetailsContainer" style="display:none;">
+  <label id="roleLabel">Select Option</label>
+  <select name="roleDetail" id="roleDetail" required></select>
+</div>
 
-      button:hover {
-        background: #4a0072;
-      }
+<input type="number" name="contribution" placeholder="Amount Paid ($)" min="0" step="0.01" />
+<select name="status" required>
+  <option value="">Attendance Status</option>
+  <option>Present</option>
+  <option>Absent</option>
+</select>
+<textarea name="notes" placeholder="Notes (Optional)"></textarea>
+<button type="submit">Submit Attendance</button>
+<div class="success" id="successMsg">✅ Submission Successful!</div>
+</form>
+</div>
 
-      .success {
-        display: none;
-        color: green;
-        font-weight: bold;
-        margin-top: 10px;
-      }
-    </style>
-  </head>
+<script>
+const scriptURL = "https://script.google.com/macros/s/AKfycbzhB80iT5OEJRYY6ANnDffOsa7h8pAHGvDt15A7JWigYLDNfL9-R8C2AQbZucyZfbvS/exec";
 
-  <body>
-    <h1>🎉 COPNWA Worship Team Attendance </h1>
+function updateRoleOptions() {
+  const roleType = document.getElementById("roleType").value;
+  const roleDetail = document.getElementById("roleDetail");
+  const container = document.getElementById("roleDetailsContainer");
+  const label = document.getElementById("roleLabel");
+  roleDetail.innerHTML = "";
 
-    <div class="container">
-      <form id="attendanceForm">
-        <input type="text" name="fullName" placeholder="Full Name" required />
+  if (roleType === "Singer") {
+    container.style.display = "block";
+    label.textContent = "Select Voice Part";
+    ["Soprano","Alto","Tenor","Bass"].forEach(opt => {
+      let o = document.createElement("option");
+      o.value = opt; o.textContent = opt;
+      roleDetail.appendChild(o);
+    });
+  } else if (roleType === "Musician") {
+    container.style.display = "block";
+    label.textContent = "Select Instrument";
+    ["Keyboard","Lead Guitar","Bass Guitar","Drums","Saxophone","Trumpet"].forEach(opt => {
+      let o = document.createElement("option");
+      o.value = opt; o.textContent = opt;
+      roleDetail.appendChild(o);
+    });
+  } else container.style.display = "none";
+}
 
-        <input type="date" name="date" placeholder="Rehearsal Date" required />
-
-        <select
-          name="roleType"
-          id="roleType"
-          required
-          onchange="updateRoleOptions()"
-        >
-          <option value="">Select Role Type</option>
-          <option value="Singer">Singer</option>
-          <option value="Musician">Musician</option>
-        </select>
-
-        <div id="roleDetailsContainer" style="display: none">
-          <label id="roleLabel">Select Option</label>
-          <select name="roleDetail" id="roleDetail" required></select>
-        </div>
-
-        <input
-          type="number"
-          name="contribution"
-          placeholder="Amount Paid ($)"
-          min="0"
-          step="0.01"
-        />
-
-        <select name="status" required>
-          <option value="">Attendance Status</option>
-          <option>Present</option>
-          <option>Absent</option>
-        </select>
-
-        <textarea name="notes" placeholder="Notes (Optional)"></textarea>
-
-        <button type="submit">Submit Attendance</button>
-        <div class="success" id="successMsg">✅ Submission Successful!</div>
-      </form>
-    </div>
-
-    <script>
-      const scriptURL = "https://script.google.com/macros/s/AKfycbyE25o-gL7_oodu9WIOEXWVCmLbOlpvQ4zcJZtuk_tLENh_c-GKQWUBFFgmRtba8C1v/exec";
-
-      function updateRoleOptions() {
-        const roleType = document.getElementById("roleType").value;
-        const roleDetail = document.getElementById("roleDetail");
-        const container = document.getElementById("roleDetailsContainer");
-        const label = document.getElementById("roleLabel");
-
-        roleDetail.innerHTML = "";
-
-        if (roleType === "Singer") {
-          container.style.display = "block";
-          label.textContent = "Select Voice Part";
-          const options = ["Soprano", "Alto", "Tenor"];
-          options.forEach((opt) => {
-            let o = document.createElement("option");
-            o.value = opt;
-            o.textContent = opt;
-            roleDetail.appendChild(o);
-          });
-        } else if (roleType === "Musician") {
-          container.style.display = "block";
-          label.textContent = "Select Instrument";
-          const options = [
-            "Keyboard",
-            "Lead Guitar",
-            "Bass Guitar",
-            "Drums",
-            "Saxophone",
-            "Trumpet",
-          ];
-          options.forEach((opt) => {
-            let o = document.createElement("option");
-            o.value = opt;
-            o.textContent = opt;
-            roleDetail.appendChild(o);
-          });
-        } else {
-          container.style.display = "none";
-        }
-      }
-
-      document
-        .getElementById("attendanceForm")
-        .addEventListener("submit", function (e) {
-          e.preventDefault();
-          fetch(scriptURL, {
-            method: "POST",
-            mode: "no-cors",
-            body: new FormData(this),
-          })
-            .then(() => {
-              document.getElementById("successMsg").style.display = "block";
-              this.reset();
-              document.getElementById("roleDetailsContainer").style.display =
-                "none";
-            })
-            .catch((err) => console.error("Error submitting form:", err));
-        });
-    </script>
-  </body>
+document.getElementById("attendanceForm").addEventListener("submit", function(e) {
+  e.preventDefault();
+  fetch(scriptURL, { method: "POST", mode: "no-cors", body: new FormData(this) })
+    .then(() => {
+      document.getElementById("successMsg").style.display = "block";
+      this.reset();
+      document.getElementById("roleDetailsContainer").style.display = "none";
+    })
+    .catch(err => console.error("Error submitting form:", err));
+});
+</script>
+</body>
 </html>
