@@ -110,49 +110,7 @@
     <script>
       const scriptURL =
         "https://script.google.com/macros/s/AKfycbyE25o-gL7_oodu9WIOEXWVCmLbOlpvQ4zcJZtuk_tLENh_c-GKQWUBFFgmRtba8C1v/exec";
-
-      function updateRoleOptions() {
-        const roleType = document.getElementById("roleType").value;
-        const roleDetail = document.getElementById("roleDetail");
-        const container = document.getElementById("roleDetailsContainer");
-        const label = document.getElementById("roleLabel");
-
-        roleDetail.innerHTML = "";
-
-        if (roleType === "Singer") {
-          container.style.display = "block";
-          label.textContent = "Select Voice Part";
-
-          const options = ["Soprano", "Alto", "Tenor"];
-          options.forEach((option) => {
-            const opt = document.createElement("option");
-            opt.value = option;
-            opt.textContent = option;
-            roleDetail.appendChild(opt);
-          });
-        } else if (roleType === "Musician") {
-          container.style.display = "block";
-          label.textContent = "Select Instrument";
-
-          const options = [
-            "Keyboard",
-            "Lead Guitar",
-            "Bass Guitar",
-            "Drums",
-            "Saxophone",
-            "Trumpet",
-          ];
-
-          options.forEach((option) => {
-            const opt = document.createElement("option");
-            opt.value = option;
-            opt.textContent = option;
-            roleDetail.appendChild(opt);
-          });
-        } else {
-          container.style.display = "none";
-        }
-      }
+      const successMsg = document.getElementById("successMsg");
 
       document
         .getElementById("attendanceForm")
@@ -161,15 +119,19 @@
 
           fetch(scriptURL, {
             method: "POST",
+            mode: "no-cors",
             body: new FormData(this),
           })
-            .then((response) => {
+            .then(() => {
               alert("✅ Submission Successful!");
               this.reset();
               document.getElementById("roleDetailsContainer").style.display =
                 "none";
             })
-            .catch((error) => alert("❌ Error submitting form"));
+            .catch((error) => {
+              alert("❌ Submission failed");
+              console.error(error);
+            });
         });
     </script>
   </body>
