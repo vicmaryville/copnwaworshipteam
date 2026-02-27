@@ -1,48 +1,50 @@
 <!doctype html>
-<html>
+<html lang="en">
   <head>
+    <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Choir Attendance</title>
-
     <style>
       body {
         font-family: Arial, sans-serif;
         background: linear-gradient(135deg, #3b0a45, #7b1fa2);
         color: white;
-        text-align: center;
         padding: 20px;
+        text-align: center;
       }
 
       .container {
+        max-width: 400px;
+        margin: auto;
         background: white;
         color: #333;
         padding: 20px;
         border-radius: 12px;
-        max-width: 400px;
-        margin: auto;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
       }
 
-      h2 {
+      h1 {
         color: #7b1fa2;
+        margin-bottom: 20px;
       }
 
       input,
       select,
-      textarea {
+      textarea,
+      button {
         width: 100%;
         padding: 10px;
         margin: 8px 0;
         border-radius: 8px;
         border: 1px solid #ccc;
+        box-sizing: border-box;
+        font-size: 16px;
       }
 
       button {
         background: #7b1fa2;
         color: white;
-        padding: 12px;
         border: none;
-        width: 100%;
-        border-radius: 8px;
         font-weight: bold;
         cursor: pointer;
       }
@@ -53,23 +55,22 @@
 
       .success {
         display: none;
-        margin-top: 10px;
         color: green;
         font-weight: bold;
+        margin-top: 10px;
       }
     </style>
   </head>
 
   <body>
-    <h1>🎉 COPNWA Worship Team</h1>
+    <h1>🎉 COPNWA Worship Team Attendance </h1>
 
     <div class="container">
-      <h2>Attendance Form</h2>
-
       <form id="attendanceForm">
         <input type="text" name="fullName" placeholder="Full Name" required />
 
-        <label>Role Type</label>
+        <input type="date" name="date" placeholder="Rehearsal Date" required />
+
         <select
           name="roleType"
           id="roleType"
@@ -86,19 +87,19 @@
           <select name="roleDetail" id="roleDetail" required></select>
         </div>
 
-        <input type="date" name="date" required />
+        <input
+          type="number"
+          name="contribution"
+          placeholder="Amount Paid ($)"
+          min="0"
+          step="0.01"
+        />
 
         <select name="status" required>
           <option value="">Attendance Status</option>
           <option>Present</option>
           <option>Absent</option>
         </select>
-
-        <input
-          type="number"
-          name="contribution"
-          placeholder="Contribution Amount ($)"
-        />
 
         <textarea name="notes" placeholder="Notes (Optional)"></textarea>
 
@@ -108,30 +109,64 @@
     </div>
 
     <script>
-      const scriptURL =
-        "https://script.google.com/macros/s/AKfycbyE25o-gL7_oodu9WIOEXWVCmLbOlpvQ4zcJZtuk_tLENh_c-GKQWUBFFgmRtba8C1v/exec";
-      const successMsg = document.getElementById("successMsg");
+      const scriptURL = "https://script.google.com/macros/s/AKfycbyE25o-gL7_oodu9WIOEXWVCmLbOlpvQ4zcJZtuk_tLENh_c-GKQWUBFFgmRtba8C1v/exec";
+
+      function updateRoleOptions() {
+        const roleType = document.getElementById("roleType").value;
+        const roleDetail = document.getElementById("roleDetail");
+        const container = document.getElementById("roleDetailsContainer");
+        const label = document.getElementById("roleLabel");
+
+        roleDetail.innerHTML = "";
+
+        if (roleType === "Singer") {
+          container.style.display = "block";
+          label.textContent = "Select Voice Part";
+          const options = ["Soprano", "Alto", "Tenor"];
+          options.forEach((opt) => {
+            let o = document.createElement("option");
+            o.value = opt;
+            o.textContent = opt;
+            roleDetail.appendChild(o);
+          });
+        } else if (roleType === "Musician") {
+          container.style.display = "block";
+          label.textContent = "Select Instrument";
+          const options = [
+            "Keyboard",
+            "Lead Guitar",
+            "Bass Guitar",
+            "Drums",
+            "Saxophone",
+            "Trumpet",
+          ];
+          options.forEach((opt) => {
+            let o = document.createElement("option");
+            o.value = opt;
+            o.textContent = opt;
+            roleDetail.appendChild(o);
+          });
+        } else {
+          container.style.display = "none";
+        }
+      }
 
       document
         .getElementById("attendanceForm")
         .addEventListener("submit", function (e) {
           e.preventDefault();
-
           fetch(scriptURL, {
             method: "POST",
             mode: "no-cors",
             body: new FormData(this),
           })
             .then(() => {
-              alert("✅ Submission Successful!");
+              document.getElementById("successMsg").style.display = "block";
               this.reset();
               document.getElementById("roleDetailsContainer").style.display =
                 "none";
             })
-            .catch((error) => {
-              alert("❌ Submission failed");
-              console.error(error);
-            });
+            .catch((err) => console.error("Error submitting form:", err));
         });
     </script>
   </body>
