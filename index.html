@@ -82,7 +82,7 @@ function updateRoleOptions() {
   if (roleType === "Singer") {
     container.style.display = "block";
     label.textContent = "Select Voice Part";
-    ["Soprano","Alto","Tenor","Bass"].forEach(opt => {
+    ["Soprano","Alto","Tenor"].forEach(opt => {
       let o = document.createElement("option");
       o.value = opt; o.textContent = opt;
       roleDetail.appendChild(o);
